@@ -4,7 +4,7 @@ const API_KEY = `cab5286096b34411810f315e2fcc082b`;
 let news = []
 
 const getLatestNews = async () => {
-    const url = new URL(`http://times-node-env.eba-appvq3ef.ap-northeast-2.elasticbeanstalk.com/top-headlines`
+    const url = new URL(`https://koreantimes.netlify.app//top-headlines`
     );
     const response = await fetch(url);
     
