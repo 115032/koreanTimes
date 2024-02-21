@@ -1,7 +1,7 @@
 
 const API_KEY = `cab5286096b34411810f315e2fcc082b`;
 
-let news = []
+let newsList = []
 
 const getLatestNews = async () => {
     const url = new URL(`https://koreantimes.netlify.app//top-headlines`
@@ -12,14 +12,61 @@ const getLatestNews = async () => {
     // json으로 뽑아줘야함 
     // json은 파일 확장자(like png, jpg etc) 종류 중 하나
 
-    news = data.articles
+    newsList = data.articles
+    render();
     
-    console.log("dddd", news)
+    console.log("dddd", newsList)
 };
 
+
+const render=() => {
+    let newsHTML = ``
+    
+    newsHTML = newsList.map(news=>` <div class="articles">
+    <div>
+     <img src="${news.urlToImage}" alt="no image">
+    </div>
+    <div class="text">
+     <h2>${news.title}</h2>
+     <p>${
+        news.description == null || news.description == ""
+        ? "내용 없음"
+        : news.description.length > 200
+        ? news.description.substring(0, 200) + "..."
+        : news.description
+    }</p>
+     <div>
+      ${news.source.name} ${news.publishedAt}
+     </div>
+    </div>
+</div>`).join("");
+
+    document.getElementById('news-board').innerHTML = newsHTML
+}
+
+// 사이드바 만들기 
+
+const openNav = () => {
+    document.getElementById("mySidenav").style.width = "250px";
+  };
+  
+const closeNav = () => {
+    document.getElementById("mySidenav").style.width = "0";
+  };
+
+// 검색창 보이고 숨기기
+const openSearchBox = () => {
+    let inputArea = document.getElementById("input-area");
+    if (inputArea.style.display === "inline") {
+      inputArea.style.display = "none";
+    } else {
+      inputArea.style.display = "inline";
+    }
+  };
+
+
+  
 getLatestNews();
-
-
 
 
 
