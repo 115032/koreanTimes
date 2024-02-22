@@ -3,6 +3,15 @@ const API_KEY = `cab5286096b34411810f315e2fcc082b`;
 
 let newsList = []
 
+// 1. 버튼들에 클릭 이벤트 주기
+const menus = document.querySelectorAll('.menu button')
+// 지금 버튼은 array고 버튼 하나하나씩 클릭이벤트를 줘야함
+// → forEach 사용
+
+menus.forEach((menu) => 
+menu.addEventListener("click",(event) => getNewByCategory(event))
+);
+
 const getLatestNews = async () => {
     const url = new URL(`https://koreantimes.netlify.app//top-headlines`
     );
@@ -15,8 +24,44 @@ const getLatestNews = async () => {
     newsList = data.articles
     render();
     
-    console.log("dddd", newsList)
+    
 };
+
+const getNewByCategory = async (event) => {
+  
+   const category = event.target.textContent.toLowerCase();
+   console.log("category", category) 
+   // ↑ 버튼 찍으면 카테고리별로 잘 찍히는지 확인
+
+   // 버튼마다 카테고리별 뉴스 가져오기 함수 만들기
+   const url = new URL (`https://koreantimes.netlify.app//top-headlines?category=${category}`);
+   
+   const response = await fetch(url);
+   const data = await response.json();
+   console.log("Ddd", data);
+
+   newsList = data.articles;
+
+   render()
+}
+
+
+const getNewByKeyword = async () => {
+    // console.log("keyword") ◀ 검색 버튼 누르면 콘솔에 잘 찍히는지 확인
+
+    const keyword = document.getElementById("search-input").value
+    console.log("keyword", keyword)
+
+    const url = new URL (`https://koreantimes.netlify.app//top-headlines?q=${keyword}`)
+    const response = await fetch(url);
+    const data = await response.json();
+
+    newsList = data.articles;
+
+    render();
+    
+}
+
 
 
 const render=() => {
@@ -69,23 +114,8 @@ const openSearchBox = () => {
 getLatestNews();
 
 
+// 카테고리 별 소팅하기
 
-
-
-// async function getNews() {
-
-//     let url = new URL(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}`)
-//     // url 설정
-
-//     console.log("uuu",url)
-//     // url 프린트 테스트
-
-//     const response = await fetch(url)
-//     // url 주소 요청
-//     // 비동기처리 시, async ↔ await 사용
-
-//     console.log("rrr",response)
-//     // response 프린트
-
-// };
-
+// 1. 버튼들에 클릭 이벤트 주기
+// 2. 카테고리별 뉴스 가져오기
+// 3. 그 뉴스를 보여주기
