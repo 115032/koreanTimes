@@ -115,3 +115,12 @@ body {
         display: block;
     }
   }
+
+  .showError {
+    min-width: 80vw;
+    height: 15vh;
+    background-color: palevioletred;
+    color: black;
+    text-align: center;
+    font-weight: bold;
+  }
