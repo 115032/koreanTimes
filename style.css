@@ -107,15 +107,6 @@ body {
     display: none;
 }
 
-  @media screen and (max-width: 429px) {
-    .hideMenu {
-        display: none;
-    }
-    #hamburger {
-        display: block;
-    }
-  }
-
   .showError {
     min-width: 80vw;
     height: 15vh;
@@ -123,4 +114,31 @@ body {
     color: black;
     text-align: center;
     font-weight: bold;
+  }
+
+  .search-box {
+
+    display: flex;
+    margin-left: 1em;
+    margin-top: 1em;
+
+  }
+
+  @media screen and (max-width: 430px) {
+    .hideMenu {
+        display: none;
+    }
+    #hamburger {
+        display: block;
+    }
+    .articles {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .articles img {
+        min-width: 100vw;
+    }
+    #hamburger {
+        margin-left: 0.5em;
+    }
   }

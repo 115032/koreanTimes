@@ -66,11 +66,29 @@ const getNewByKeyword = async () => {
     getNews();
 }
 
+// pagination 시작점 ↓ 우리가 정하는 값들
+
+let totalResults = 0
+let page = 1
+const pageSize = 10
+const groupSize = 5
+
+
+
 // 코드 리펙토링 → 반복되는 것을 하나로 묶기 
 
 const getNews = async () => {
    try {
+
+    url.searchParams.set("page", page)
+    // ▲ page라는 파라미터를 page란 값으로 셋팅 => &page=page
+    url.searchParams.set("pageSize", pageSize);
+    // ▲▲▲▲▲▲호출하기 전에 셋팅
+
     const response = await fetch(url);
+   
+    
+
     const data = await response.json();
 
     if(response.status === 200) {
@@ -80,7 +98,11 @@ const getNews = async () => {
            }
 
         newsList = data.articles;
+        totalResults = data.totalResults
+        // ▲ API 받을 때 totalResult 값도 들고오기
+
         render();
+        paginationRender();
         // response status가 정상적일 때 = code # 200 일 때
         // 정상적으로 코드 작동 
     } else {
@@ -171,11 +193,87 @@ const renderError = (errorMessage) => {
 
 
 
+
+
+
+// pagination 
+
+// 알 수 있는 정보 from API 
+// 1. page size = 20 by default
+// 2. 현재 보고 있는 page = 3(임의로)
+// 3. totalResult (전체 페이지 정보) = 101 (임의로)
+
+// total = 101 
+// pagesize = 10
+// 내가 현재 보고있는 페이지 = 3 
+// pagination 을 어떻게 프린트 해야될까?
+
+// → totalpage = 11
+
+// groupsize = 5 (보여지는 페이지 수)
+
+// pagegroup = page / groupsize = 3/5 = 0..3 = 올림하면 1 
+                               // 7/5 = 1..5 = 올림하면 2 
+
+// so what is requested information ?
+// 1. totalResult → api에 주어짐
+// 2. pagesize → 우리가 정함
+// 3. page → 우리가 정함
+// 4. groupsize → 우리가 정함
+// 5. totalpage → 구해야됨 math.celi(반올림)(tr/ps)
+// 6. pagegroup → 구해야됨 math.celi(반올림)(page/groupsize)
+// 7. 마지막 = pagegroup x groupsize
+// 8. 첫번째 = 마지막 - (gs-1)
+
+
+
+
+
+const paginationRender = () => {
+   // totalResult 
+   // page
+   // pageSize
+   // groupSize
+   // totalPages
+   const totalPages = Math.ceil(totalResults/pageSize)
+
+ // ▲▲▲▲▲▲▲▲▲ 위에서 initialize 해줌
+
+
+   // pageGroup
+   const pageGroup = Math.ceil(page/groupSize);
+   // lastPage
+   const lastPage = pageGroup * groupSize;
+   // 마지막 페이지 그룹이 그룹사이즈보다 작다? lastPage = totalPage
+
+   if (lastPage>totalPages) {
+    lastPage = totalPages
+   }
+
+
+
+
+   // firstPage
+   const firstPage = lastPage - (groupSize-1) <= 0? 1: lastPage - (groupSize-1)
+
+
+   let paginationHTML = ``
+
+   for (let i=firstPage; i<=lastPage; i++){
+    paginationHTML += `<li class="page-item ${i===page ? "active" : ""}" onclick="moveToPage(${i})"><a class="page-link">${i}</a></li>
+    `
+   }
+
+   // pagination 누울 자리
+   document.querySelector(".pagination").innerHTML = paginationHTML;
+}
+
+const moveToPage = (pageNum) => {
+  console.log("moveToPage",pageNum);
+  // ▲▲▲▲▲ page 버튼 잘먹는지 확인
+
+  page = pageNum;
+  getNews()
+}
+
 getLatestNews();
-
-
-// 카테고리 별 소팅하기
-
-// 1. 버튼들에 클릭 이벤트 주기
-// 2. 카테고리별 뉴스 가져오기
-// 3. 그 뉴스를 보여주기
